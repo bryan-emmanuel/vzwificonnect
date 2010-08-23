@@ -26,6 +26,7 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class string {
+        public static final int about=0x7f040012;
         public static final int app_name=0x7f040004;
         public static final int close=0x7f040010;
         public static final int connect=0x7f040009;
@@ -36,6 +37,7 @@ public final class R {
         public static final int enabled=0x7f04000b;
         public static final int enabling=0x7f04000a;
         public static final int generator=0x7f040003;
+        public static final int gpl=0x7f040013;
         public static final int no_aps=0x7f040008;
         public static final int rescan=0x7f040007;
         public static final int ssid=0x7f040000;

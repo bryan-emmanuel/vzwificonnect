@@ -1,3 +1,21 @@
+/* VzWiFiConnect - Android WiFi connection tool
+ * Copyright (C) 2009 Bryan Emmanuel
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  Bryan Emmanuel piusvelte@gmail.com
+ */
 package com.piusvelte.vzwificonnect;
 
 import java.util.List;
@@ -18,7 +36,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,9 +51,10 @@ import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class UI extends ListActivity implements AdListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {
-	public static final int RESCAN_ID = Menu.FIRST;
-	public static final int WIFI_ID = Menu.FIRST + 1;
-	public static final int CONNECT_ID = Menu.FIRST + 2;
+	private static final int RESCAN_ID = Menu.FIRST;
+	private static final int WIFI_ID = Menu.FIRST + 1;
+	private static final int CONNECT_ID = Menu.FIRST + 2;
+	private static final int ABOUT_ID = Menu.FIRST + 3;
 	private Button btn_generator;
 	private EditText fld_ssid, fld_wep, fld_wep_alternate;
 	private CheckBox btn_wifi;
@@ -43,7 +62,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-	public static final String TAG = "VzWiFiConnect";
+//	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,10 +80,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		btn_wifi.setOnCheckedChangeListener(this);
 		wifiStateChanged(mWifiManager.getWifiState());
 		mWifiManager.startScan();
-		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-		dialog.setMessage(R.string.usage);
-		dialog.setNegativeButton(R.string.close, this);
-		dialog.show();
+		showAbout();
 	}
 
 	@Override
@@ -72,6 +88,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		boolean result = super.onCreateOptionsMenu(menu);
 		menu.add(0, RESCAN_ID, 0, R.string.rescan).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, WIFI_ID, 0, R.string.wifi_settings).setIcon(android.R.drawable.ic_menu_manage);
+		menu.add(0, ABOUT_ID, 0, R.string.about).setIcon(android.R.drawable.ic_menu_more);
 		return result;
 	}
 
@@ -82,6 +99,9 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			return true;
 		case WIFI_ID:
 			startActivity(new Intent().setComponent(new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings")));
+			return true;
+		case ABOUT_ID:
+			showAbout();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -132,7 +152,14 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		fld_wep_alternate.setText("");
 	}
 	
-	public String generator() {
+	private void showAbout() {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		dialog.setMessage(R.string.usage);
+		dialog.setNegativeButton(R.string.close, this);
+		dialog.show();
+	}
+	
+	private String generator() {
 		int dec = 0;
 		String ssid = fld_ssid.getText().toString().toUpperCase();
 		for (int i = 0; i < ssid.length(); i++) {
@@ -148,18 +175,18 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		return wep;
 	}
 
-	public String toHex(int dec) {
+	private String toHex(int dec) {
 		int rem = dec % 16;
 		String hex = "0123456789ABCDEF";
 		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
 		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
 	
-	public void btnWifiSetText(String msg) {
+	private void btnWifiSetText(String msg) {
 		btn_wifi.setText(getString(R.string.wifi) + " " + msg);		
 	}
 	
-	public void wifiStateChanged(int state) {
+	private void wifiStateChanged(int state) {
 		switch (state) {
 		case WifiManager.WIFI_STATE_ENABLING:
 			btnWifiSetText(getString(R.string.enabling));
@@ -180,7 +207,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		}
 	}
 	
-	public void networkStateChanged(NetworkInfo ni) {
+	private void networkStateChanged(NetworkInfo ni) {
 		if (ni.isConnected()) btnWifiSetText(getString(R.string.connected));
 		else if (ni.isConnectedOrConnecting()) btnWifiSetText(getString(R.string.connecting));
 		else wifiStateChanged(mWifiManager.getWifiState());
