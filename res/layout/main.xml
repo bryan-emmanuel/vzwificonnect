@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/com.piusvelte.wapdroid"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:textSize="14dip">
+	<TableLayout android:id="@+id/tbl_flds"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_alignParentTop="true" android:stretchColumns="0">
+		<TableRow>
+			<EditText android:id="@+id/fld_ssid" android:text="@string/ssid" />
+			<Button android:id="@+id/btn_generator" android:text="@string/generator" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/wep" />
+			<EditText android:id="@+id/fld_wep" />
+		</TableRow>
+		<TableRow>
+			<TextView android:text="@string/wep_alternate" />
+			<EditText android:id="@+id/fld_wep_alternate" />
+		</TableRow>
+	</TableLayout>
+	<CheckBox android:id="@+id/btn_wifi" android:text="@string/wifi"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_below="@id/tbl_flds" />
+	<com.admob.android.ads.AdView android:id="@+id/ad"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true" />
+	<ListView android:id="@android:id/list" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi"
+		android:layout_above="@id/ad" />
+	<TextView android:id="@android:id/empty" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi"
+		android:layout_above="@id/ad" android:text="@string/no_aps" />
+</RelativeLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+	<string name="ssid">SSID</string>
+	<string name="wep">WEP</string>
+	<string name="wep_alternate">WEP alternate</string>
+	<string name="generator">Generate WEP</string>
+	<string name="app_name">VzWiFiConnect</string>
+	<string name="wifi">Wi-Fi</string>
+	<string name="wifi_settings">Wi-Fi Settings</string>
+	<string name="rescan">Rescan</string>
+	<string name="no_aps">No valid access points scanned</string>
+	<string name="connect">Connect</string>
+	<string name="enabling">enabling</string>
+	<string name="enabled">enabled</string>
+	<string name="disabling">disabling</string>
+	<string name="disabled">disabled</string>
+	<string name="connecting">connecting</string>
+	<string name="connected">connected</string>
+	<string name="close">Close</string>
+	<string name="usage">Obtain permission to connect to a Wi-Fi network from the network owner before connecting. VzWiFiConnect generates the default WEP key for some wireless routers. Enter the SSID and press Generate manually generate the WEP key, or if any WiFi is on and any valid networks are scanned, short-press a network to generate the WEP key, or long-press to generate the WEP key and attempt to connect.</string>
+</resources>
