@@ -116,25 +116,24 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == CONNECT_ID) {
-			int pos = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
-			String ssid = mSsid[pos], bssid = mBssid[pos];
-			final List<WifiConfiguration> lwc = mWifiManager.getConfiguredNetworks();
+			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
+			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 			int networkId = -1;
-			for (int i = lwc.size() - 1; i >= 0; i--) {
-				final WifiConfiguration wifiConfig = lwc.get(i);
+			for (int i = configs.size() - 1; i >= 0; i--) {
+				final WifiConfiguration config = configs.get(i);
 				// compare ssid & bssid
-				if (wifiConfig.BSSID.equals(ssid) && wifiConfig.SSID.equals(bssid)) {
-					networkId = wifiConfig.networkId;
-					wifiConfig.wepKeys[0] = bssid + generator();
-					mWifiManager.updateNetwork(wifiConfig);
+				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
+					networkId = config.networkId;
+					config.wepKeys[0] = mBssid[ap] + generator();
+					mWifiManager.updateNetwork(config);
 					break;
 				}
 			}
 			if (networkId == -1) {
 				WifiConfiguration wc = new WifiConfiguration();
-				wc.SSID = ssid;
-				wc.BSSID = bssid;
-				wc.wepKeys[0] = bssid + generator();
+				wc.SSID = mSsid[ap];
+				wc.BSSID = mBssid[ap];
+				wc.wepKeys[0] = mBssid[ap] + generator();
 				networkId = mWifiManager.addNetwork(wc);
 			}
 			// disable others to force connection to this network
@@ -151,14 +150,14 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		fld_wep.setText(mBssid[position].substring(3,5).toUpperCase() + mBssid[position].substring(6,8).toUpperCase() + generator());
 		fld_wep_alternate.setText("");
 	}
-	
+
 	private void showAbout() {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 		dialog.setMessage(R.string.usage);
 		dialog.setNegativeButton(R.string.close, this);
 		dialog.show();
 	}
-	
+
 	private String generator() {
 		int dec = 0;
 		String ssid = fld_ssid.getText().toString().toUpperCase();
@@ -181,11 +180,11 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
 		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
-	
+
 	private void btnWifiSetText(String msg) {
 		btn_wifi.setText(getString(R.string.wifi) + " " + msg);		
 	}
-	
+
 	private void wifiStateChanged(int state) {
 		switch (state) {
 		case WifiManager.WIFI_STATE_ENABLING:
@@ -206,7 +205,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			return;
 		}
 	}
-	
+
 	private void networkStateChanged(NetworkInfo ni) {
 		if (ni.isConnected()) btnWifiSetText(getString(R.string.connected));
 		else if (ni.isConnectedOrConnecting()) btnWifiSetText(getString(R.string.connecting));
