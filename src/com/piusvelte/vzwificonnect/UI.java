@@ -36,7 +36,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-//import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,7 +61,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-	//	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -118,7 +116,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == CONNECT_ID) {
-<<<<<<< .mine
 			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
 			int networkId = -1, priority = 0, max_priority = 99999;
 			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
@@ -130,32 +127,16 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			priority = priority < max_priority ? priority + 1 : max_priority;
 			for (int i = configs.size() - 1; i >= 0; i--) {
 				config = configs.get(i);
-=======
-			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
-			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
-			int networkId = -1;
-			for (int i = configs.size() - 1; i >= 0; i--) {
-				final WifiConfiguration config = configs.get(i);
->>>>>>> .r4
 				// compare ssid & bssid
-<<<<<<< .mine
 				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
 					networkId = config.networkId;
 					config.wepKeys[0] = mBssid[ap] + generator();
 					if (config.BSSID == null) config.BSSID = mBssid[ap];
 					if (config.priority < priority) config.priority = priority;
 					mWifiManager.updateNetwork(config);
-=======
-				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
-					networkId = config.networkId;
-					config.wepKeys[0] = mBssid[ap] + generator();
-					mWifiManager.updateNetwork(config);
-					break;
->>>>>>> .r4
 				}
 			}
 			if (networkId == -1) {
-<<<<<<< .mine
 				config = new WifiConfiguration();
 				config.SSID = mSsid[ap];
 				config.BSSID = mBssid[ap];
@@ -163,13 +144,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 				config.priority = priority;
 				config.hiddenSSID = false;
 				networkId = mWifiManager.addNetwork(config);
-=======
-				WifiConfiguration wc = new WifiConfiguration();
-				wc.SSID = mSsid[ap];
-				wc.BSSID = mBssid[ap];
-				wc.wepKeys[0] = mBssid[ap] + generator();
-				networkId = mWifiManager.addNetwork(wc);
->>>>>>> .r4
 			}
 			// disable others to force connection to this network
 			if (networkId != -1) mWifiManager.enableNetwork(networkId, true);
@@ -185,18 +159,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		fld_wep.setText(mBssid[position].substring(3,5).toUpperCase() + mBssid[position].substring(6,8).toUpperCase() + generator());
 		fld_wep_alternate.setText("");
 	}
-<<<<<<< .mine
 
-=======
-
-	private void showAbout() {
-		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-		dialog.setMessage(R.string.usage);
-		dialog.setNegativeButton(R.string.close, this);
-		dialog.show();
-	}
-
->>>>>>> .r4
 	private String generator() {
 		int dec = 0;
 		String ssid = fld_ssid.getText().toString().toUpperCase();
@@ -219,15 +182,9 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
 		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
-<<<<<<< .mine
 
 	private void btnWifiSetText(int res) {
 		btn_wifi.setText(getString(R.string.wifi) + " " + getString(res));		
-=======
-
-	private void btnWifiSetText(String msg) {
-		btn_wifi.setText(getString(R.string.wifi) + " " + msg);		
->>>>>>> .r4
 	}
 
 	private void wifiStateChanged(int state) {
@@ -250,7 +207,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			return;
 		}
 	}
-<<<<<<< .mine
 
 	private void networkStateChanged(NetworkInfo.DetailedState state) {
 		switch (state) {
@@ -283,13 +239,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		case SUSPENDED:
 			return;
 		}
-=======
-
-	private void networkStateChanged(NetworkInfo ni) {
-		if (ni.isConnected()) btnWifiSetText(getString(R.string.connected));
-		else if (ni.isConnectedOrConnecting()) btnWifiSetText(getString(R.string.connecting));
-		else wifiStateChanged(mWifiManager.getWifiState());
->>>>>>> .r4
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {

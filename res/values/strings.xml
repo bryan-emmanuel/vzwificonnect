@@ -23,11 +23,7 @@
 	<string name="wep">WEP</string>
 	<string name="wep_alternate">WEP alternate</string>
 	<string name="generator">Generate WEP</string>
-<<<<<<< .mine
 	<string name="app_name">Vz WiFi Connect</string>
-=======
-	<string name="app_name">Vz Wi-Fi Connect</string>
->>>>>>> .r4
 	<string name="wifi">Wi-Fi</string>
 	<string name="wifi_settings">Wi-Fi Settings</string>
 	<string name="rescan">Rescan</string>
