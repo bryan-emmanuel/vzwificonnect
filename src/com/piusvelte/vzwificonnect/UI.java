@@ -62,7 +62,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-//	private static final String TAG = "VzWiFiConnect";
+	//	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		btn_wifi.setOnCheckedChangeListener(this);
 		wifiStateChanged(mWifiManager.getWifiState());
 		mWifiManager.startScan();
-		showAbout();
 	}
 
 	@Override
@@ -101,7 +100,10 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			startActivity(new Intent().setComponent(new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings")));
 			return true;
 		case ABOUT_ID:
-			showAbout();
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			dialog.setMessage(R.string.usage);
+			dialog.setNegativeButton(R.string.close, this);
+			dialog.show();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -116,28 +118,61 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == CONNECT_ID) {
+<<<<<<< .mine
+			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
+			int networkId = -1, priority = 0, max_priority = 99999;
+			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
+			WifiConfiguration config;
+			// get the highest priority
+			for (int i = configs.size() - 1; i >= 0; i--) {
+				if (configs.get(i).priority > priority) priority = configs.get(i).priority;
+			}
+			priority = priority < max_priority ? priority + 1 : max_priority;
+			for (int i = configs.size() - 1; i >= 0; i--) {
+				config = configs.get(i);
+=======
 			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
 			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 			int networkId = -1;
 			for (int i = configs.size() - 1; i >= 0; i--) {
 				final WifiConfiguration config = configs.get(i);
+>>>>>>> .r4
 				// compare ssid & bssid
+<<<<<<< .mine
+				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
+					networkId = config.networkId;
+					config.wepKeys[0] = mBssid[ap] + generator();
+					if (config.BSSID == null) config.BSSID = mBssid[ap];
+					if (config.priority < priority) config.priority = priority;
+					mWifiManager.updateNetwork(config);
+=======
 				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
 					networkId = config.networkId;
 					config.wepKeys[0] = mBssid[ap] + generator();
 					mWifiManager.updateNetwork(config);
 					break;
+>>>>>>> .r4
 				}
 			}
 			if (networkId == -1) {
+<<<<<<< .mine
+				config = new WifiConfiguration();
+				config.SSID = mSsid[ap];
+				config.BSSID = mBssid[ap];
+				config.wepKeys[0] = mBssid[ap] + generator();
+				config.priority = priority;
+				config.hiddenSSID = false;
+				networkId = mWifiManager.addNetwork(config);
+=======
 				WifiConfiguration wc = new WifiConfiguration();
 				wc.SSID = mSsid[ap];
 				wc.BSSID = mBssid[ap];
 				wc.wepKeys[0] = mBssid[ap] + generator();
 				networkId = mWifiManager.addNetwork(wc);
+>>>>>>> .r4
 			}
 			// disable others to force connection to this network
-			mWifiManager.enableNetwork(networkId, true);
+			if (networkId != -1) mWifiManager.enableNetwork(networkId, true);
 			return true;
 		}
 		return super.onContextItemSelected(item);
@@ -150,6 +185,9 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		fld_wep.setText(mBssid[position].substring(3,5).toUpperCase() + mBssid[position].substring(6,8).toUpperCase() + generator());
 		fld_wep_alternate.setText("");
 	}
+<<<<<<< .mine
+
+=======
 
 	private void showAbout() {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -158,6 +196,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		dialog.show();
 	}
 
+>>>>>>> .r4
 	private String generator() {
 		int dec = 0;
 		String ssid = fld_ssid.getText().toString().toUpperCase();
@@ -180,36 +219,77 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
 		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
+<<<<<<< .mine
+
+	private void btnWifiSetText(int res) {
+		btn_wifi.setText(getString(R.string.wifi) + " " + getString(res));		
+=======
 
 	private void btnWifiSetText(String msg) {
 		btn_wifi.setText(getString(R.string.wifi) + " " + msg);		
+>>>>>>> .r4
 	}
 
 	private void wifiStateChanged(int state) {
 		switch (state) {
 		case WifiManager.WIFI_STATE_ENABLING:
-			btnWifiSetText(getString(R.string.enabling));
+			btnWifiSetText(R.string.enabling);
 			return;
 		case WifiManager.WIFI_STATE_ENABLED:
-			btnWifiSetText(getString(R.string.enabled));
+			btnWifiSetText(R.string.enabled);
 			wifiEnabled = true;
 			btn_wifi.setChecked(true);
 			return;
 		case WifiManager.WIFI_STATE_DISABLING:
-			btnWifiSetText(getString(R.string.disabling));
+			btnWifiSetText(R.string.disabling);
 			wifiEnabled = false;
 			btn_wifi.setChecked(false);
 			return;
 		case WifiManager.WIFI_STATE_DISABLED:
-			btnWifiSetText(getString(R.string.disabled));
+			btnWifiSetText(R.string.disabled);
 			return;
 		}
 	}
+<<<<<<< .mine
+
+	private void networkStateChanged(NetworkInfo.DetailedState state) {
+		switch (state) {
+		case AUTHENTICATING:
+			btnWifiSetText(R.string.authenticating);
+			return;
+		case CONNECTED:
+			btnWifiSetText(R.string.connected);
+			return;
+		case CONNECTING:
+			btnWifiSetText(R.string.connecting);
+			return;
+		case DISCONNECTED:
+			btnWifiSetText(R.string.disconnected);
+			return;
+		case DISCONNECTING:
+			btnWifiSetText(R.string.disconnecting);
+			return;
+		case FAILED:
+			btnWifiSetText(R.string.failed);
+			return;
+		case IDLE:
+			return;
+		case OBTAINING_IPADDR:
+			btnWifiSetText(R.string.ipaddr);
+			return;
+		case SCANNING:
+			btnWifiSetText(R.string.scanning);
+			return;
+		case SUSPENDED:
+			return;
+		}
+=======
 
 	private void networkStateChanged(NetworkInfo ni) {
 		if (ni.isConnected()) btnWifiSetText(getString(R.string.connected));
 		else if (ni.isConnectedOrConnecting()) btnWifiSetText(getString(R.string.connecting));
 		else wifiStateChanged(mWifiManager.getWifiState());
+>>>>>>> .r4
 	}
 
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -243,7 +323,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 					}
 				}
 				setListAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSsid));
-			} else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) networkStateChanged((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO));
+			} else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) networkStateChanged(((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)).getDetailedState());
 			else if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) wifiStateChanged(intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 4));
 		}
 	};
@@ -255,6 +335,8 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		f.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
 		f.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
 		f.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+		f.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+		f.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
 		registerReceiver(mReceiver, f);
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mSsid));
 	}
