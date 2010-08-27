@@ -36,6 +36,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +62,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
+	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == CONNECT_ID) {
 			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
+			Log.v(TAG,"ssid:"+mSsid[ap]+",bssid:"+mBssid[ap]);
 			int networkId = -1, priority = 0, max_priority = 99999;
 			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 			WifiConfiguration config;
@@ -125,27 +128,34 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 				if (configs.get(i).priority > priority) priority = configs.get(i).priority;
 			}
 			priority = priority < max_priority ? priority + 1 : max_priority;
+			Log.v(TAG,"priority:"+Integer.toString(priority));
 			for (int i = configs.size() - 1; i >= 0; i--) {
 				config = configs.get(i);
 				// compare ssid & bssid
 				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
 					networkId = config.networkId;
 					config.wepKeys[0] = mBssid[ap] + generator();
+					Log.v(TAG,"wep:"+config.wepKeys[0]);
 					if (config.BSSID == null) config.BSSID = mBssid[ap];
 					if (config.priority < priority) config.priority = priority;
+					Log.v(TAG,"update config");
 					mWifiManager.updateNetwork(config);
 				}
 			}
 			if (networkId == -1) {
+				Log.v(TAG,"create new config");
 				config = new WifiConfiguration();
 				config.SSID = mSsid[ap];
 				config.BSSID = mBssid[ap];
 				config.wepKeys[0] = mBssid[ap] + generator();
+				Log.v(TAG,"wep:"+config.wepKeys[0]);
 				config.priority = priority;
 				config.hiddenSSID = false;
+				Log.v(TAG,"add config");
 				networkId = mWifiManager.addNetwork(config);
 			}
 			// disable others to force connection to this network
+			Log.v(TAG,"enable networkId:"+networkId);
 			if (networkId != -1) mWifiManager.enableNetwork(networkId, true);
 			return true;
 		}
