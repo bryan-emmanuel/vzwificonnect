@@ -23,6 +23,9 @@ import java.util.List;
 import com.admob.android.ads.AdListener;
 import com.admob.android.ads.AdView;
 
+import android.net.wifi.WifiConfiguration.AuthAlgorithm;
+import android.net.wifi.WifiConfiguration.GroupCipher;
+import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -36,7 +39,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
+//import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,7 +65,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-	private static final String TAG = "VzWiFiConnect";
+//	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -119,7 +122,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == CONNECT_ID) {
 			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
-			Log.v(TAG,"ssid:"+mSsid[ap]+",bssid:"+mBssid[ap]);
 			int networkId = -1, priority = 0, max_priority = 99999;
 			final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 			WifiConfiguration config;
@@ -128,34 +130,48 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 				if (configs.get(i).priority > priority) priority = configs.get(i).priority;
 			}
 			priority = priority < max_priority ? priority + 1 : max_priority;
-			Log.v(TAG,"priority:"+Integer.toString(priority));
 			for (int i = configs.size() - 1; i >= 0; i--) {
 				config = configs.get(i);
 				// compare ssid & bssid
 				if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
 					networkId = config.networkId;
-					config.wepKeys[0] = mBssid[ap] + generator();
-					Log.v(TAG,"wep:"+config.wepKeys[0]);
-					if (config.BSSID == null) config.BSSID = mBssid[ap];
+					config.allowedAuthAlgorithms.clear();
+					config.allowedGroupCiphers.clear();
+					config.allowedKeyManagement.clear();
+					config.allowedPairwiseCiphers.clear();
+					config.allowedProtocols.clear();
+					config.wepKeys[0] = mBssid[ap].substring(3,5).toLowerCase() + mBssid[ap].substring(6,8).toLowerCase() + generator();
 					if (config.priority < priority) config.priority = priority;
-					Log.v(TAG,"update config");
+					config.hiddenSSID = false;
+					config.wepTxKeyIndex = 0;
+					config.allowedAuthAlgorithms.set(AuthAlgorithm.OPEN);
+					config.allowedAuthAlgorithms.set(AuthAlgorithm.SHARED);
+					config.allowedKeyManagement.set(KeyMgmt.NONE);
+					config.allowedGroupCiphers.set(GroupCipher.WEP40);
+					config.allowedGroupCiphers.set(GroupCipher.WEP104);
 					mWifiManager.updateNetwork(config);
 				}
 			}
 			if (networkId == -1) {
-				Log.v(TAG,"create new config");
 				config = new WifiConfiguration();
-				config.SSID = mSsid[ap];
-				config.BSSID = mBssid[ap];
-				config.wepKeys[0] = mBssid[ap] + generator();
-				Log.v(TAG,"wep:"+config.wepKeys[0]);
+				config.allowedAuthAlgorithms.clear();
+				config.allowedGroupCiphers.clear();
+				config.allowedKeyManagement.clear();
+				config.allowedPairwiseCiphers.clear();
+				config.allowedProtocols.clear();
+				config.SSID = '"' + mSsid[ap] + '"';
+				config.wepKeys[0] = mBssid[ap].substring(3,5).toLowerCase() + mBssid[ap].substring(6,8).toLowerCase() + generator();
 				config.priority = priority;
 				config.hiddenSSID = false;
-				Log.v(TAG,"add config");
+				config.wepTxKeyIndex = 0;
+				config.allowedAuthAlgorithms.set(AuthAlgorithm.OPEN);
+				config.allowedAuthAlgorithms.set(AuthAlgorithm.SHARED);
+				config.allowedKeyManagement.set(KeyMgmt.NONE);
+				config.allowedGroupCiphers.set(GroupCipher.WEP40);
+				config.allowedGroupCiphers.set(GroupCipher.WEP104);
 				networkId = mWifiManager.addNetwork(config);
 			}
 			// disable others to force connection to this network
-			Log.v(TAG,"enable networkId:"+networkId);
 			if (networkId != -1) mWifiManager.enableNetwork(networkId, true);
 			return true;
 		}
@@ -166,13 +182,13 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	protected void onListItemClick(ListView list, View view, int position, long id) {
 		super.onListItemClick(list, view, position, id);
 		fld_ssid.setText(mSsid[position]);
-		fld_wep.setText(mBssid[position].substring(3,5).toUpperCase() + mBssid[position].substring(6,8).toUpperCase() + generator());
+		fld_wep.setText(mBssid[position].substring(3,5).toLowerCase() + mBssid[position].substring(6,8).toLowerCase() + generator());
 		fld_wep_alternate.setText("");
 	}
 
 	private String generator() {
 		int dec = 0;
-		String ssid = fld_ssid.getText().toString().toUpperCase();
+		String ssid = fld_ssid.getText().toString().toLowerCase();
 		for (int i = 0; i < ssid.length(); i++) {
 			try {
 				dec += Integer.parseInt(Character.toString(ssid.charAt(i))) * Math.pow(36, i);
@@ -188,7 +204,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 
 	private String toHex(int dec) {
 		int rem = dec % 16;
-		String hex = "0123456789ABCDEF";
+		String hex = "0123456789abcdef";
 		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
 		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
@@ -260,7 +276,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 				mSsid = new String[0];
 				mBssid = new String[0];
 				for (ScanResult sr : lsr) {
-					String bssid = sr.BSSID.substring(3,5).toUpperCase() + sr.BSSID.substring(6,8).toUpperCase();
+					String bssid = sr.BSSID.substring(3,5).toLowerCase() + sr.BSSID.substring(6,8).toLowerCase();
 					if ((sr.SSID.length() == 5) && (bssid.equals("1801") || bssid.equals("1F90"))) {
 						String[] ssid_cp = new String[mSsid.length];
 						String[] bssid_cp = new String[mSsid.length];
