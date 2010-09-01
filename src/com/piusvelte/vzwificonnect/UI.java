@@ -98,6 +98,8 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case RESCAN_ID:
+			btnWifiSetText(R.string.scanning);
+			mWifiManager.startScan();
 			return true;
 		case WIFI_ID:
 			startActivity(new Intent().setComponent(new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings")));
@@ -205,8 +207,8 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private String toHex(int dec) {
 		int rem = dec % 16;
 		String hex = "0123456789abcdef";
-		if (dec - rem == 0) return (rem > 16 ? "" : Character.toString(hex.charAt(rem)));
-		else return (rem > 16 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
+		if (dec - rem == 0) return (rem > 15 ? "" : Character.toString(hex.charAt(rem)));
+		else return (rem > 15 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
 
 	private void btnWifiSetText(int res) {
@@ -272,6 +274,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
 			if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+				wifiStateChanged(mWifiManager.getWifiState());
 				List<ScanResult> lsr = mWifiManager.getScanResults();
 				mSsid = new String[0];
 				mBssid = new String[0];
