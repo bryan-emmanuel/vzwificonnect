@@ -82,6 +82,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		btn_generator.setOnClickListener(this);
 		btn_wifi.setOnCheckedChangeListener(this);
 		wifiStateChanged(mWifiManager.getWifiState());
+		btnWifiSetText(R.string.scanning);
 		mWifiManager.startScan();
 	}
 
