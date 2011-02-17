@@ -65,7 +65,7 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-//	private static final String TAG = "VzWiFiConnect";
+	//	private static final String TAG = "VzWiFiConnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -199,17 +199,10 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 				dec += Character.toString(ssid.charAt(i)).charAt(0) - 55;				
 			}
 		}
-		String wep = "";
-		if (6 > toHex(dec).length()) for (int i = 0; i < (6 - toHex(dec).length()); i++) wep += 0;
-		else wep += toHex(dec);
+		String wep = Integer.toHexString(dec);
+		// need to pad the wep out to 6 characters
+		while (wep.length() < 6) wep = "0" + wep;
 		return wep;
-	}
-
-	private String toHex(int dec) {
-		int rem = dec % 16;
-		String hex = "0123456789abcdef";
-		if (dec - rem == 0) return (rem > 15 ? "" : Character.toString(hex.charAt(rem)));
-		else return (rem > 15 ? "" : toHex((dec - rem) / 16) + Character.toString(hex.charAt(rem)));
 	}
 
 	private void btnWifiSetText(int res) {
@@ -277,31 +270,33 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			if (action.equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
 				wifiStateChanged(mWifiManager.getWifiState());
 				List<ScanResult> lsr = mWifiManager.getScanResults();
-				mSsid = new String[0];
-				mBssid = new String[0];
-				for (ScanResult sr : lsr) {
-					String bssid = sr.BSSID.substring(3,5).toLowerCase() + sr.BSSID.substring(6,8).toLowerCase();
-					if ((sr.SSID.length() == 5) && (bssid.equals("1801") || bssid.equals("1F90"))) {
-						String[] ssid_cp = new String[mSsid.length];
-						String[] bssid_cp = new String[mSsid.length];
-						for (int i = 0; i < mSsid.length; i++) {
-							ssid_cp[i] = mSsid[i];
-							bssid_cp[i] = mBssid[i];
-						}
-						mSsid = new String[ssid_cp.length + 1];
-						mBssid = new String[ssid_cp.length + 1];
-						for (int i = 0; i < mSsid.length; i++) {
-							if (i == (mSsid.length - 1)) {
-								mSsid[i] = sr.SSID;
-								mBssid[i] = sr.BSSID;
-							} else {
-								mSsid[i] = ssid_cp[i];
-								mBssid[i] = bssid_cp[i];
+				if (lsr != null) {
+					mSsid = new String[0];
+					mBssid = new String[0];
+					for (ScanResult sr : lsr) {
+						String bssid = sr.BSSID.substring(3,5).toLowerCase() + sr.BSSID.substring(6,8).toLowerCase();
+						if ((sr.SSID.length() == 5) && (bssid.equals("1801") || bssid.equals("1F90"))) {
+							String[] ssid_cp = new String[mSsid.length];
+							String[] bssid_cp = new String[mSsid.length];
+							for (int i = 0; i < mSsid.length; i++) {
+								ssid_cp[i] = mSsid[i];
+								bssid_cp[i] = mBssid[i];
+							}
+							mSsid = new String[ssid_cp.length + 1];
+							mBssid = new String[ssid_cp.length + 1];
+							for (int i = 0; i < mSsid.length; i++) {
+								if (i == (mSsid.length - 1)) {
+									mSsid[i] = sr.SSID;
+									mBssid[i] = sr.BSSID;
+								} else {
+									mSsid[i] = ssid_cp[i];
+									mBssid[i] = bssid_cp[i];
+								}
 							}
 						}
 					}
+					setListAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSsid));
 				}
-				setListAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSsid));
 			} else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) networkStateChanged(((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)).getDetailedState());
 			else if (intent.getAction().equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) wifiStateChanged(intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 4));
 		}
