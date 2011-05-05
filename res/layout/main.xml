@@ -19,12 +19,14 @@
  *  Bryan Emmanuel piusvelte@gmail.com
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res/com.piusvelte.wapdroid"
+	xmlns:app="http://schemas.android.com/apk/res/com.piusvelte.vzwificonnect"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:textSize="14dip">
+	<LinearLayout android:id="@+id/ad" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
 	<TableLayout android:id="@+id/tbl_flds"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_alignParentTop="true" android:stretchColumns="0">
+		android:layout_below="@id/ad" android:stretchColumns="0">
 		<TableRow>
 			<EditText android:id="@+id/fld_ssid" android:text="@string/ssid" />
 			<Button android:id="@+id/btn_generator" android:text="@string/generator" />
@@ -41,13 +43,8 @@
 	<CheckBox android:id="@+id/btn_wifi" android:text="@string/wifi"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_below="@id/tbl_flds" />
-	<com.admob.android.ads.AdView android:id="@+id/ad"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true" />
 	<ListView android:id="@android:id/list" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi"
-		android:layout_above="@id/ad" />
+		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi" />
 	<TextView android:id="@android:id/empty" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi"
-		android:layout_above="@id/ad" android:text="@string/no_aps" />
+		android:layout_height="fill_parent" android:layout_below="@id/btn_wifi" android:text="@string/no_aps" />
 </RelativeLayout>

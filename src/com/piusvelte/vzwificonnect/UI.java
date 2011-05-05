@@ -20,8 +20,7 @@ package com.piusvelte.vzwificonnect;
 
 import java.util.List;
 
-import com.admob.android.ads.AdListener;
-import com.admob.android.ads.AdView;
+import com.google.ads.*;
 
 import android.net.wifi.WifiConfiguration.AuthAlgorithm;
 import android.net.wifi.WifiConfiguration.GroupCipher;
@@ -50,10 +49,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class UI extends ListActivity implements AdListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {
+public class UI extends ListActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {
 	private static final int RESCAN_ID = Menu.FIRST;
 	private static final int WIFI_ID = Menu.FIRST + 1;
 	private static final int CONNECT_ID = Menu.FIRST + 2;
@@ -72,6 +72,9 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		registerForContextMenu(getListView());
+		AdView adView = new AdView(this, AdSize.BANNER, "a14c72b7fa7aace");
+		((LinearLayout) findViewById(R.id.ad)).addView(adView);
+		adView.loadAd(new AdRequest());
 		mContext = this;
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		fld_ssid = (EditText) findViewById(R.id.fld_ssid);
@@ -323,18 +326,6 @@ public class UI extends ListActivity implements AdListener, View.OnClickListener
 			mReceiver = null;
 		}
 	}
-
-	@Override
-	public void onFailedToReceiveAd(AdView arg0) {}
-
-	@Override
-	public void onFailedToReceiveRefreshedAd(AdView arg0) {}
-
-	@Override
-	public void onReceiveAd(AdView arg0) {}
-
-	@Override
-	public void onReceiveRefreshedAd(AdView arg0) {}
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
