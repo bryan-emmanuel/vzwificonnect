@@ -16,11 +16,9 @@
  *  
  *  Bryan Emmanuel piusvelte@gmail.com
  */
-package com.piusvelte.vzwificonnect;
+package com.piusvelte.vzwificonnectpro;
 
 import java.util.List;
-
-import com.google.ads.*;
 
 import android.net.wifi.WifiConfiguration.AuthAlgorithm;
 import android.net.wifi.WifiConfiguration.GroupCipher;
@@ -49,7 +47,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -72,9 +69,6 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		registerForContextMenu(getListView());
-		AdView adView = new AdView(this, AdSize.BANNER, "a14c72b7fa7aace");
-		((LinearLayout) findViewById(R.id.ad)).addView(adView);
-		adView.loadAd(new AdRequest());
 		mContext = this;
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		fld_ssid = (EditText) findViewById(R.id.fld_ssid);
@@ -340,21 +334,19 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 		}
 	}
 
-	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		dialog.cancel();
+	}
+
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if (isChecked != wifiEnabled) {
 			mWifiManager.setWifiEnabled(isChecked);
 		}
 	}
 
-	@Override
 	public void onClick(View v) {
 		fld_wep.setText("1801" + generator());
 		fld_wep_alternate.setText("1F90" + generator());
 	}
 
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
-		dialog.cancel();
-	}
 }

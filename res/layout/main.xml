@@ -22,11 +22,9 @@
 	xmlns:app="http://schemas.android.com/apk/res/com.piusvelte.vzwificonnect"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:textSize="14dip">
-	<LinearLayout android:id="@+id/ad" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" />
 	<TableLayout android:id="@+id/tbl_flds"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_below="@id/ad" android:stretchColumns="0">
+		android:stretchColumns="0">
 		<TableRow>
 			<EditText android:id="@+id/fld_ssid" android:text="@string/ssid" />
 			<Button android:id="@+id/btn_generator" android:text="@string/generator" />
