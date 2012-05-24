@@ -20,13 +20,14 @@ package com.piusvelte.vzwificonnectpro;
 
 import java.util.List;
 
+import com.google.ads.*;
+
 import android.net.wifi.WifiConfiguration.AuthAlgorithm;
 import android.net.wifi.WifiConfiguration.GroupCipher;
 import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +37,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-//import android.util.Log;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,7 +48,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class UI extends ListActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {
@@ -62,13 +65,18 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 	private Context mContext;
 	private String[] mSsid = new String[0], mBssid = new String[0];
 	private boolean wifiEnabled;
-	//	private static final String TAG = "VzWiFiConnect";
+	private static final String TAG = "vzwificonnect";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		registerForContextMenu(getListView());
+		if (!getPackageName().toLowerCase().contains("pro")) {
+			AdView adView = new AdView(this, AdSize.BANNER, "a14c72b7fa7aace");
+			((LinearLayout) findViewById(R.id.ad)).addView(adView);
+			adView.loadAd(new AdRequest());
+		}
 		mContext = this;
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		fld_ssid = (EditText) findViewById(R.id.fld_ssid);
@@ -100,7 +108,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 			mWifiManager.startScan();
 			return true;
 		case WIFI_ID:
-			startActivity(new Intent().setComponent(new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings")));
+			startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
 			return true;
 		case ABOUT_ID:
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -123,6 +131,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 		if (item.getItemId() == CONNECT_ID) {
 			int ap = ((AdapterContextMenuInfo) item.getMenuInfo()).position;
 			if ((mSsid.length > ap) && (mBssid.length > ap)) {
+				fld_ssid.setText(mSsid[ap]);
 				int networkId = -1, priority = 0, max_priority = 99999;
 				final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 				WifiConfiguration config;
@@ -143,7 +152,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 						config.allowedKeyManagement.clear();
 						config.allowedPairwiseCiphers.clear();
 						config.allowedProtocols.clear();
-						config.wepKeys[0] = (mBssid[ap].substring(3,5) + mBssid[ap].substring(6,8)).toLowerCase() + generator();
+						config.wepKeys[0] = generator(mSsid[ap].toCharArray(), mBssid[ap]);
 						if (config.priority < priority) {
 							config.priority = priority;
 						}
@@ -165,7 +174,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 					config.allowedPairwiseCiphers.clear();
 					config.allowedProtocols.clear();
 					config.SSID = '"' + mSsid[ap] + '"';
-					config.wepKeys[0] = (mBssid[ap].substring(3,5) + mBssid[ap].substring(6,8)).toLowerCase() + generator();
+					config.wepKeys[0] = generator(mSsid[ap].toCharArray(), mBssid[ap]);
 					config.priority = priority;
 					config.hiddenSSID = false;
 					config.wepTxKeyIndex = 0;
@@ -190,26 +199,29 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 	protected void onListItemClick(ListView list, View view, int position, long id) {
 		super.onListItemClick(list, view, position, id);
 		fld_ssid.setText(mSsid[position]);
-		fld_wep.setText((mBssid[position].substring(3,5) + mBssid[position].substring(6,8)).toLowerCase() + generator());
+		fld_wep.setText(generator(mSsid[position].toCharArray(), mBssid[position]));
 		fld_wep_alternate.setText("");
 	}
 
-	private String generator() {
+	private String generator(char[] ssid, String bssid) {
 		int dec = 0;
-		String ssid = fld_ssid.getText().toString().toLowerCase();
-		for (int i = 0; i < ssid.length(); i++) {
+		for (int i = 0, i2 = ssid.length; i < i2; i++) {
 			try {
-				dec += Integer.parseInt(Character.toString(ssid.charAt(i))) * Math.pow(36, i);
+				dec += Integer.parseInt(Character.toString(ssid[i])) * Math.pow(36, i);
 			} catch (NumberFormatException nfe) {
-				dec += Character.toString(ssid.charAt(i)).charAt(0) - 55;				
+				dec += (((int) ssid[i]) - 55) * Math.pow(36, i);				
 			}
 		}
-		String wep = Integer.toHexString(dec);
+		String wep = Integer.toHexString(dec).toUpperCase();
 		// need to pad the wep out to 6 characters
 		while (wep.length() < 6) {
 			wep = "0" + wep;
 		}
-		return wep;
+		if (bssid.length() > 4) {
+			return (bssid.substring(3,5) + bssid.substring(6,8)).toUpperCase() + wep;
+		} else {
+			return bssid.toUpperCase() + wep;
+		}
 	}
 
 	private void btnWifiSetText(int res) {
@@ -281,17 +293,17 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 					mSsid = new String[0];
 					mBssid = new String[0];
 					for (ScanResult sr : lsr) {
-						String bssid = (sr.BSSID.substring(3,5) + sr.BSSID.substring(6,8)).toLowerCase();
-						if ((sr.SSID.length() == 5) && (bssid.equals("1801") || bssid.equals("1F90"))) {
+						String bssid = (sr.BSSID.substring(3,5) + sr.BSSID.substring(6,8)).toUpperCase();
+						if ((sr.SSID.length() == 5) && (sr.SSID.matches("[0-9A-Fa-f]+")) && (bssid.equals("1801") || bssid.equals("1F90"))) {
 							String[] ssid_cp = new String[mSsid.length];
 							String[] bssid_cp = new String[mSsid.length];
-							for (int i = 0; i < mSsid.length; i++) {
+							for (int i = 0, i2 = mSsid.length; i < i2; i++) {
 								ssid_cp[i] = mSsid[i];
 								bssid_cp[i] = mBssid[i];
 							}
 							mSsid = new String[ssid_cp.length + 1];
 							mBssid = new String[ssid_cp.length + 1];
-							for (int i = 0; i < mSsid.length; i++) {
+							for (int i = 0, i2 = mSsid.length; i < i2; i++) {
 								if (i == (mSsid.length - 1)) {
 									mSsid[i] = sr.SSID;
 									mBssid[i] = sr.BSSID;
@@ -303,6 +315,10 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 						}
 					}
 					setListAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSsid));
+					(new AlertDialog.Builder(UI.this))
+					.setMessage(R.string.ap_info)
+					.setNegativeButton(android.R.string.ok, UI.this)
+					.show();
 				}
 			} else if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
 				networkStateChanged(((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)).getDetailedState());
@@ -345,8 +361,15 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 	}
 
 	public void onClick(View v) {
-		fld_wep.setText("1801" + generator());
-		fld_wep_alternate.setText("1F90" + generator());
+		String ssid = fld_ssid.getText().toString().toUpperCase();
+		if (ssid.length() != 5) {
+			Toast.makeText(this, "The network name must be 5 characters to generate the key.", Toast.LENGTH_LONG).show();
+		} else if (ssid.matches("[0-9A-Fa-f]+")) {
+			fld_ssid.setText(fld_ssid.getText().toString().toUpperCase());
+			fld_wep.setText(generator(fld_ssid.getText().toString().toCharArray(), "1801"));
+			fld_wep_alternate.setText(generator(fld_ssid.getText().toString().toCharArray(), "1F90"));
+		} else {
+			Toast.makeText(this, "The network name must only contain 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, or F to generate the key.", Toast.LENGTH_LONG).show();
+		}
 	}
-
 }
