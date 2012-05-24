@@ -294,7 +294,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 					mBssid = new String[0];
 					for (ScanResult sr : lsr) {
 						String bssid = (sr.BSSID.substring(3,5) + sr.BSSID.substring(6,8)).toUpperCase();
-						if ((sr.SSID.length() == 5) && (sr.SSID.matches("[0-9A-Fa-f]+")) && (bssid.equals("1801") || bssid.equals("1F90"))) {
+						if ((sr.SSID.length() == 5) && isValidNetwork(sr.SSID) && (bssid.equals("1801") || bssid.equals("1F90"))) {
 							String[] ssid_cp = new String[mSsid.length];
 							String[] bssid_cp = new String[mSsid.length];
 							for (int i = 0, i2 = mSsid.length; i < i2; i++) {
@@ -364,12 +364,17 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 		String ssid = fld_ssid.getText().toString().toUpperCase();
 		if (ssid.length() != 5) {
 			Toast.makeText(this, "The network name must be 5 characters to generate the key.", Toast.LENGTH_LONG).show();
-		} else if (ssid.matches("[0-9A-Fa-f]+")) {
-			fld_ssid.setText(fld_ssid.getText().toString().toUpperCase());
-			fld_wep.setText(generator(fld_ssid.getText().toString().toCharArray(), "1801"));
-			fld_wep_alternate.setText(generator(fld_ssid.getText().toString().toCharArray(), "1F90"));
+		} else if (isValidNetwork(ssid)) {
+			fld_ssid.setText(ssid);
+			fld_wep.setText(generator(ssid.toCharArray(), "1801"));
+			fld_wep_alternate.setText(generator(ssid.toCharArray(), "1F90"));
 		} else {
 			Toast.makeText(this, "The network name must only contain 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, or F to generate the key.", Toast.LENGTH_LONG).show();
 		}
 	}
+	
+	private boolean isValidNetwork(String network) {
+		return network.matches("[0-9A-Za-z]+");
+	}
+	
 }
