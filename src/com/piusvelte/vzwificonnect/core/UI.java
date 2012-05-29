@@ -16,7 +16,7 @@
  *  
  *  Bryan Emmanuel piusvelte@gmail.com
  */
-package com.piusvelte.vzwificonnectpro;
+package com.piusvelte.vzwificonnect.core;
 
 import java.util.List;
 
