@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ * VzWiFiConnect - Android WiFi connection tool
+ * Copyright (C) 2009 Bryan Emmanuel
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *  Bryan Emmanuel piusvelte@gmail.com
+-->
+<resources>
+	<string name="ssid">SSID</string>
+	<string name="wep">WEP</string>
+	<string name="wep_alternate">WEP alternate</string>
+	<string name="generator">Generate key</string>
+	<string name="app_name">Vz WiFi Connect</string>
+	<string name="wifi">Enable Wi-Fi</string>
+	<string name="wifi_settings">Wi-Fi Settings</string>
+	<string name="rescan">Rescan</string>
+	<string name="no_aps">No valid access points scanned</string>
+	<string name="connect">Connect</string>
+	<string name="enabling">enabling</string>
+	<string name="enabled">enabled</string>
+	<string name="disabling">disabling</string>
+	<string name="disabled">disabled</string>
+	<string name="authenticating">authenticating</string>
+	<string name="connected">connected</string>
+	<string name="connecting">connecting</string>
+	<string name="disconnected">disconnected</string>
+	<string name="disconnecting">disconnecting</string>
+	<string name="failed">failed</string>
+	<string name="ipaddr">obtaining ip address</string>
+	<string name="scanning">scanning</string>
+	<string name="close">Close</string>
+	<string name="usage">Obtain permission to connect to a Wi-Fi network from the network owner before connecting. VzWiFiConnect generates the default WEP key for some wireless routers. Enter the SSID and press Generate to generate the WEP key, or if any WiFi is enabled and any valid networks are scanned, short-press a network to generate the WEP key, or long-press to generate the WEP key and attempt to connect. Please report issues to http://code.google.com/p/vzwificonnect/</string>
+	<string name="about">About</string>
+    <string name="gpl">Wapdroid - Android WiFi connection tool\u000A\u000ACopyright (C) 2009 Bryan Emmanuel\u000A\u000AThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\u000A\u000AThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\u000A\u000AYou should have received a copy of the GNU General Public License along with this program.  If not, see \u003C\u000Ahttp://www.gnu.org/licenses/\u003E.\u000A\u000ABryan Emmanuel piusvelte@gmail.com</string>
+    <string name="network_name">Network name</string>
+    <string name="ap_info">Short press a network to generate the key. Long press a network to attempt to connect to it.</string>
+</resources>
