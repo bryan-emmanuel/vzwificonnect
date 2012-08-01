@@ -9,50 +9,207 @@ package com.piusvelte.vzwificonnect.core;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int actionbarCompatItemHomeStyle=0x7f010002;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int actionbarCompatItemStyle=0x7f010001;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int actionbarCompatProgressIndicatorStyle=0x7f010003;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int actionbarCompatTitleStyle=0x7f010000;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int borderDrawable=0x7f010005;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static int maskDrawable=0x7f010004;
+    }
+    public static final class color {
+        public static int actionbar_title_color=0x7f040000;
+    }
+    public static final class dimen {
+        public static int actionbar_compat_button_home_width=0x7f050002;
+        public static int actionbar_compat_button_width=0x7f050001;
+        public static int actionbar_compat_height=0x7f050000;
     }
     public static final class drawable {
-        public static int icon=0x7f020000;
+        public static int actionbar_compat_item=0x7f020000;
+        public static int actionbar_compat_item_focused=0x7f020001;
+        public static int actionbar_compat_item_pressed=0x7f020002;
+        public static int actionbar_shadow=0x7f020003;
+        public static int ic_home=0x7f020004;
+        public static int icon=0x7f020005;
     }
     public static final class id {
-        public static int ad=0x7f050000;
-        public static int btn_generator=0x7f050003;
-        public static int btn_wifi=0x7f050006;
-        public static int fld_ssid=0x7f050002;
-        public static int fld_wep=0x7f050004;
-        public static int fld_wep_alternate=0x7f050005;
-        public static int tbl_flds=0x7f050001;
+        public static int actionbar_compat=0x7f060000;
+        public static int actionbar_compat_item_refresh=0x7f060003;
+        public static int actionbar_compat_item_refresh_progress=0x7f060002;
+        public static int actionbar_compat_title=0x7f060001;
+        public static int ad=0x7f060005;
+        public static int btn_generator=0x7f060008;
+        public static int btn_wifi=0x7f06000b;
+        public static int fld_ssid=0x7f060007;
+        public static int fld_wep=0x7f060009;
+        public static int fld_wep_alternate=0x7f06000a;
+        public static int menu_refresh=0x7f060004;
+        public static int menu_ui_about=0x7f06000e;
+        public static int menu_ui_rescan=0x7f06000c;
+        public static int menu_ui_wifi_settings=0x7f06000d;
+        public static int tbl_flds=0x7f060006;
     }
     public static final class layout {
-        public static int main=0x7f030000;
+        public static int actionbar_compat=0x7f030000;
+        public static int actionbar_indeterminate_progress=0x7f030001;
+        public static int main=0x7f030002;
+    }
+    public static final class menu {
+        public static int menu_ui=0x7f090000;
     }
     public static final class string {
-        public static int about=0x7f040018;
-        public static int ap_info=0x7f04001b;
-        public static int app_name=0x7f040004;
-        public static int authenticating=0x7f04000e;
-        public static int close=0x7f040016;
-        public static int connect=0x7f040009;
-        public static int connected=0x7f04000f;
-        public static int connecting=0x7f040010;
-        public static int disabled=0x7f04000d;
-        public static int disabling=0x7f04000c;
-        public static int disconnected=0x7f040011;
-        public static int disconnecting=0x7f040012;
-        public static int enabled=0x7f04000b;
-        public static int enabling=0x7f04000a;
-        public static int failed=0x7f040013;
-        public static int generator=0x7f040003;
-        public static int gpl=0x7f040019;
-        public static int ipaddr=0x7f040014;
-        public static int network_name=0x7f04001a;
-        public static int no_aps=0x7f040008;
-        public static int rescan=0x7f040007;
-        public static int scanning=0x7f040015;
-        public static int ssid=0x7f040000;
-        public static int usage=0x7f040017;
-        public static int wep=0x7f040001;
-        public static int wep_alternate=0x7f040002;
-        public static int wifi=0x7f040005;
-        public static int wifi_settings=0x7f040006;
+        public static int about=0x7f070018;
+        public static int ap_info=0x7f07001a;
+        public static int app_name=0x7f070004;
+        public static int authenticating=0x7f07000e;
+        public static int close=0x7f070016;
+        public static int connect=0x7f070009;
+        public static int connected=0x7f07000f;
+        public static int connecting=0x7f070010;
+        public static int disabled=0x7f07000d;
+        public static int disabling=0x7f07000c;
+        public static int disconnected=0x7f070011;
+        public static int disconnecting=0x7f070012;
+        public static int enabled=0x7f07000b;
+        public static int enabling=0x7f07000a;
+        public static int failed=0x7f070013;
+        public static int generator=0x7f070003;
+        public static int ipaddr=0x7f070014;
+        public static int network_name=0x7f070019;
+        public static int no_aps=0x7f070008;
+        public static int rescan=0x7f070007;
+        public static int scanning=0x7f070015;
+        public static int ssid=0x7f070000;
+        public static int usage=0x7f070017;
+        public static int wep=0x7f070001;
+        public static int wep_alternate=0x7f070002;
+        public static int wifi=0x7f070005;
+        public static int wifi_settings=0x7f070006;
     }
+    public static final class style {
+        public static int ActionBar=0x7f080008;
+        public static int ActionBarCompat=0x7f080001;
+        public static int ActionBarCompatHomeItem=0x7f080007;
+        public static int ActionBarCompatItem=0x7f080006;
+        public static int ActionBarCompatItemBase=0x7f080002;
+        public static int ActionBarCompatProgressIndicator=0x7f080003;
+        public static int ActionBarCompatTitle=0x7f080005;
+        public static int ActionBarCompatTitleBase=0x7f080004;
+        public static int ActionBarTitle=0x7f080009;
+        public static int AppTheme=0x7f080000;
+    }
+    public static final class styleable {
+        /** Attributes that can be used with a AppTheme.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #AppTheme_actionbarCompatItemHomeStyle com.piusvelte.vzwificonnect.core:actionbarCompatItemHomeStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #AppTheme_actionbarCompatItemStyle com.piusvelte.vzwificonnect.core:actionbarCompatItemStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #AppTheme_actionbarCompatProgressIndicatorStyle com.piusvelte.vzwificonnect.core:actionbarCompatProgressIndicatorStyle}</code></td><td></td></tr>
+           <tr><td><code>{@link #AppTheme_actionbarCompatTitleStyle com.piusvelte.vzwificonnect.core:actionbarCompatTitleStyle}</code></td><td></td></tr>
+           </table>
+           @see #AppTheme_actionbarCompatItemHomeStyle
+           @see #AppTheme_actionbarCompatItemStyle
+           @see #AppTheme_actionbarCompatProgressIndicatorStyle
+           @see #AppTheme_actionbarCompatTitleStyle
+         */
+        public static final int[] AppTheme = {
+            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#actionbarCompatItemHomeStyle}
+          attribute's value can be found in the {@link #AppTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionbarCompatItemHomeStyle
+        */
+        public static final int AppTheme_actionbarCompatItemHomeStyle = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#actionbarCompatItemStyle}
+          attribute's value can be found in the {@link #AppTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionbarCompatItemStyle
+        */
+        public static final int AppTheme_actionbarCompatItemStyle = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#actionbarCompatProgressIndicatorStyle}
+          attribute's value can be found in the {@link #AppTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionbarCompatProgressIndicatorStyle
+        */
+        public static final int AppTheme_actionbarCompatProgressIndicatorStyle = 3;
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#actionbarCompatTitleStyle}
+          attribute's value can be found in the {@link #AppTheme} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:actionbarCompatTitleStyle
+        */
+        public static final int AppTheme_actionbarCompatTitleStyle = 0;
+        /** Attributes that can be used with a BezelImageView.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #BezelImageView_borderDrawable com.piusvelte.vzwificonnect.core:borderDrawable}</code></td><td></td></tr>
+           <tr><td><code>{@link #BezelImageView_maskDrawable com.piusvelte.vzwificonnect.core:maskDrawable}</code></td><td></td></tr>
+           </table>
+           @see #BezelImageView_borderDrawable
+           @see #BezelImageView_maskDrawable
+         */
+        public static final int[] BezelImageView = {
+            0x7f010004, 0x7f010005
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#borderDrawable}
+          attribute's value can be found in the {@link #BezelImageView} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:borderDrawable
+        */
+        public static final int BezelImageView_borderDrawable = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.piusvelte.vzwificonnect.core.R.attr#maskDrawable}
+          attribute's value can be found in the {@link #BezelImageView} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:maskDrawable
+        */
+        public static final int BezelImageView_maskDrawable = 0;
+    };
 }

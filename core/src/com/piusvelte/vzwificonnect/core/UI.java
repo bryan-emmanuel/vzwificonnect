@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -54,10 +55,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class UI extends ListActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DialogInterface.OnClickListener {
-	private static final int RESCAN_ID = Menu.FIRST;
-	private static final int WIFI_ID = Menu.FIRST + 1;
-	private static final int CONNECT_ID = Menu.FIRST + 2;
-	private static final int ABOUT_ID = Menu.FIRST + 3;
+	private static final int CONNECT_ID = Menu.FIRST;
 	private Button btn_generator;
 	private EditText fld_ssid, fld_wep, fld_wep_alternate;
 	private CheckBox btn_wifi;
@@ -93,29 +91,25 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean result = super.onCreateOptionsMenu(menu);
-		menu.add(0, RESCAN_ID, 0, R.string.rescan).setIcon(android.R.drawable.ic_menu_search);
-		menu.add(0, WIFI_ID, 0, R.string.wifi_settings).setIcon(android.R.drawable.ic_menu_manage);
-		menu.add(0, ABOUT_ID, 0, R.string.about).setIcon(android.R.drawable.ic_menu_more);
-		return result;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_ui, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case RESCAN_ID:
+		int itemId = item.getItemId();
+		if (itemId == R.id.menu_ui_rescan) {
 			btnWifiSetText(R.string.scanning);
 			mWifiManager.startScan();
-			return true;
-		case WIFI_ID:
+			Toast.makeText(mContext, "Scanning for valid networks", Toast.LENGTH_SHORT).show();
+		} else if (itemId == R.id.menu_ui_wifi_settings) {
 			startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
-			return true;
-		case ABOUT_ID:
+		} else if (itemId == R.id.menu_ui_about) {
 			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 			dialog.setMessage(R.string.usage);
 			dialog.setNegativeButton(R.string.close, this);
 			dialog.show();
-			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -135,27 +129,48 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 				int networkId = -1, priority = 0, max_priority = 99999;
 				final List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 				WifiConfiguration config;
-				// get the highest priority
-				for (int i = configs.size() - 1; i >= 0; i--) {
-					if (configs.get(i).priority > priority) {
-						priority = configs.get(i).priority;
+				if (configs != null) {
+					// get the highest priority
+					for (int i = configs.size() - 1; i >= 0; i--) {
+						if (configs.get(i).priority > priority) {
+							priority = configs.get(i).priority;
+						}
 					}
-				}
-				priority = priority < max_priority ? priority + 1 : max_priority;
-				for (int i = configs.size() - 1; i >= 0; i--) {
-					config = configs.get(i);
-					// compare ssid & bssid
-					if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
-						networkId = config.networkId;
+					priority = priority < max_priority ? priority + 1 : max_priority;
+					for (int i = configs.size() - 1; i >= 0; i--) {
+						config = configs.get(i);
+						// compare ssid & bssid
+						if ((config.SSID != null) && mSsid[ap].equals(config.SSID) && ((config.BSSID == null) || mBssid[ap].equals(config.BSSID))) {
+							networkId = config.networkId;
+							config.allowedAuthAlgorithms.clear();
+							config.allowedGroupCiphers.clear();
+							config.allowedKeyManagement.clear();
+							config.allowedPairwiseCiphers.clear();
+							config.allowedProtocols.clear();
+							config.wepKeys[0] = generator(mSsid[ap].toCharArray(), mBssid[ap]);
+							if (config.priority < priority) {
+								config.priority = priority;
+							}
+							config.hiddenSSID = false;
+							config.wepTxKeyIndex = 0;
+							config.allowedAuthAlgorithms.set(AuthAlgorithm.OPEN);
+							config.allowedAuthAlgorithms.set(AuthAlgorithm.SHARED);
+							config.allowedKeyManagement.set(KeyMgmt.NONE);
+							config.allowedGroupCiphers.set(GroupCipher.WEP40);
+							config.allowedGroupCiphers.set(GroupCipher.WEP104);
+							mWifiManager.updateNetwork(config);
+						}
+					}
+					if (networkId == -1) {
+						config = new WifiConfiguration();
 						config.allowedAuthAlgorithms.clear();
 						config.allowedGroupCiphers.clear();
 						config.allowedKeyManagement.clear();
 						config.allowedPairwiseCiphers.clear();
 						config.allowedProtocols.clear();
+						config.SSID = '"' + mSsid[ap] + '"';
 						config.wepKeys[0] = generator(mSsid[ap].toCharArray(), mBssid[ap]);
-						if (config.priority < priority) {
-							config.priority = priority;
-						}
+						config.priority = priority;
 						config.hiddenSSID = false;
 						config.wepTxKeyIndex = 0;
 						config.allowedAuthAlgorithms.set(AuthAlgorithm.OPEN);
@@ -163,31 +178,14 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 						config.allowedKeyManagement.set(KeyMgmt.NONE);
 						config.allowedGroupCiphers.set(GroupCipher.WEP40);
 						config.allowedGroupCiphers.set(GroupCipher.WEP104);
-						mWifiManager.updateNetwork(config);
+						networkId = mWifiManager.addNetwork(config);
 					}
-				}
-				if (networkId == -1) {
-					config = new WifiConfiguration();
-					config.allowedAuthAlgorithms.clear();
-					config.allowedGroupCiphers.clear();
-					config.allowedKeyManagement.clear();
-					config.allowedPairwiseCiphers.clear();
-					config.allowedProtocols.clear();
-					config.SSID = '"' + mSsid[ap] + '"';
-					config.wepKeys[0] = generator(mSsid[ap].toCharArray(), mBssid[ap]);
-					config.priority = priority;
-					config.hiddenSSID = false;
-					config.wepTxKeyIndex = 0;
-					config.allowedAuthAlgorithms.set(AuthAlgorithm.OPEN);
-					config.allowedAuthAlgorithms.set(AuthAlgorithm.SHARED);
-					config.allowedKeyManagement.set(KeyMgmt.NONE);
-					config.allowedGroupCiphers.set(GroupCipher.WEP40);
-					config.allowedGroupCiphers.set(GroupCipher.WEP104);
-					networkId = mWifiManager.addNetwork(config);
-				}
-				// disable others to force connection to this network
-				if (networkId != -1) {
-					mWifiManager.enableNetwork(networkId, true);
+					// disable others to force connection to this network
+					if (networkId != -1) {
+						mWifiManager.enableNetwork(networkId, true);
+					}
+				} else {
+					Toast.makeText(mContext, "Unable to get WiFi Configuration, please try again", Toast.LENGTH_SHORT).show();
 				}
 			}
 			return true;
@@ -250,6 +248,7 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 	}
 
 	private void networkStateChanged(NetworkInfo.DetailedState state) {
+
 		switch (state) {
 		case AUTHENTICATING:
 			btnWifiSetText(R.string.authenticating);
@@ -315,10 +314,19 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 						}
 					}
 					setListAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, mSsid));
-					(new AlertDialog.Builder(UI.this))
-					.setMessage(R.string.ap_info)
-					.setNegativeButton(android.R.string.ok, UI.this)
-					.show();
+					if (mSsid.length > 0) {
+						(new AlertDialog.Builder(mContext))
+						.setMessage(R.string.ap_info)
+						.setNegativeButton(android.R.string.ok, UI.this)
+						.show();
+					} else {
+						(new AlertDialog.Builder(mContext))
+						.setMessage(R.string.no_aps)
+						.setNegativeButton(android.R.string.ok, UI.this)
+						.show();
+					}
+				} else {
+					Toast.makeText(mContext, R.string.no_aps, Toast.LENGTH_SHORT);
 				}
 			} else if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
 				networkStateChanged(((NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO)).getDetailedState());
@@ -372,9 +380,9 @@ public class UI extends ListActivity implements View.OnClickListener, CompoundBu
 			Toast.makeText(this, "The network name must only contain 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, or F to generate the key.", Toast.LENGTH_LONG).show();
 		}
 	}
-	
+
 	private boolean isValidNetwork(String network) {
 		return network.matches("[0-9A-Za-z]+");
 	}
-	
+
 }
